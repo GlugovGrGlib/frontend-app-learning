@@ -93,6 +93,7 @@ const Unit = ({
   const [showError, setShowError] = useState(false);
   const [modalOptions, setModalOptions] = useState({ open: false });
   const [shouldDisplayHonorCode, setShouldDisplayHonorCode] = useState(false);
+  const [scormFullScreen, setScormFullScreen] = useState(false);
 
   const unit = useModel('units', id);
   const course = useModel('coursewareMeta', courseId);
@@ -133,6 +134,8 @@ const Unit = ({
       // We listen for this message from LMS to know when the page needs to
       // be scrolled to another location on the page.
       window.scrollTo(0, data.offset + document.getElementById('unit-iframe').offsetTop);
+    } else if (type === 'plugin.scormFullScreen') {
+      setScormFullScreen(payload.open);
     }
   }, [id, setIframeHeight, hasLoaded, iframeHeight, setHasLoaded, onLoaded]);
   useEventListener('message', receiveMessage);
@@ -219,6 +222,7 @@ const Unit = ({
             height={iframeHeight}
             scrolling="no"
             referrerPolicy="origin"
+            className={scormFullScreen ? 'scorm-fullscreen' : ''}
             onLoad={() => {
               // onLoad *should* only fire after everything in the iframe has finished its own load events.
               // Which means that the plugin.resize message (which calls setHasLoaded above) will have fired already
